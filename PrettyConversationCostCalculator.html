@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conversation Cost Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        function calculateCost() {
+            // Correct Constants
+            var wordsPerMinute = 150;
+            var averageCharactersPerWord = 6.5;
+            var tokensPerWord = (averageCharactersPerWord / 4) * (3 / 4);
+            var inputCostPer1000Tokens = 0.0010;  // $0.0010 per 1000 tokens
+            var outputCostPer1000Tokens = 0.0020; // $0.0020 per 1000 tokens
+            var speechToTextCostPerMinute = 0.006;
+            var textToSpeechCostPer1000Characters = 0.015; // $0.015 per 1000 characters
+
+            // Getting the user input for duration in minutes
+            var duration = parseFloat(document.getElementById('duration').value);
+
+            // Calculating costs
+            var textModelInputCost = 0.60 * duration * wordsPerMinute * tokensPerWord * (inputCostPer1000Tokens / 1000);
+            var textModelOutputCost = 0.40 * duration * wordsPerMinute * tokensPerWord * (outputCostPer1000Tokens / 1000);
+            var speechToTextCost = 0.60 * duration * speechToTextCostPerMinute;
+            var textToSpeechCost = 0.40 * duration * wordsPerMinute * averageCharactersPerWord * (textToSpeechCostPer1000Characters / 1000);
+
+            // Total cost
+            var totalCost = textModelInputCost + textModelOutputCost + speechToTextCost + textToSpeechCost;
+
+            // Displaying the result in a table
+            var resultTable = "<table border='1'><tr><th>Component</th><th>Cost</th></tr>";
+            resultTable += "<tr><td>Text Model Input Cost</td><td>$" + textModelInputCost.toFixed(4) + "</td></tr>";
+            resultTable += "<tr><td>Text Model Output Cost</td><td>$" + textModelOutputCost.toFixed(4) + "</td></tr>";
+            resultTable += "<tr><td>Speech to Text Cost</td><td>$" + speechToTextCost.toFixed(4) + "</td></tr>";
+            resultTable += "<tr><td>Text to Speech Cost</td><td>$" + textToSpeechCost.toFixed(4) + "</td></tr>";
+            resultTable += "<tr><td><strong>Total Cost</strong></td><td><strong>$" + totalCost.toFixed(4) + "</strong></td></tr>";
+            resultTable += "</table>";
+
+            // Updating the result area
+            document.getElementById('result').innerHTML = resultTable;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Conversation Cost Calculator</h1>
+        <label for="duration">Enter duration in minutes:</label>
+        <input type="number" id="duration" name="duration" min="0" step="any"><br><br>
+        <button onclick="calculateCost()">Calculate Cost</button>
+        <div id="result"></div>
+    </div>
+</body>
+</html>
